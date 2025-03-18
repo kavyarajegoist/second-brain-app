@@ -1,17 +1,25 @@
 require('dotenv').config()
-
-
-import express from "express";
 import mongoose from "mongoose";
+import express from "express";
+import { port,Mongo_Url } from "./config";
+import userRouter from "./routes/user";
+
 
 const app = express();
+app.use(express.json())
 
-const port :any= process.env.PORT; 
+app.use('/api/user/',userRouter)
 
-app.get("/api/user",(req:any,res:any)=>{
-    res.json(  "hello world to my world ")
-})
 
+
+
+async function main(){
+await mongoose.connect(Mongo_Url);
 app.listen(port,()=>{
     console.log( `Listening on port ${port}`);
+    console.log(`Connected to the database ${Mongo_Url}`);
 })
+}
+
+
+main();

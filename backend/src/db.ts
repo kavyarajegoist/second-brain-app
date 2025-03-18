@@ -1,4 +1,3 @@
-import { password } from "bun";
 import mongoose from "mongoose";
 
 
@@ -8,4 +7,4 @@ const userSchema = new mongoose.Schema({
 })
 
 export type IUser = mongoose.InferSchemaType<typeof userSchema>
-export const userModel = mongoose.model<IUser>('user',userSchema)
+export const userModel = mongoose.model('user',userSchema)
