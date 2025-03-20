@@ -3,7 +3,7 @@ import { z } from "zod";
 export const UserSchema = z.object({
   username: z
     .string()
-    .min(3, "username must min of 3 letters.")
+    .min(1, "username must min of 3 letters.")
     .max(10, "username cannot be more than 10 letter"),
   password: z
     .string()
@@ -25,4 +25,4 @@ export const UserSchema = z.object({
 });
 
 
-export  type User = z.infer<typeof UserSchema>
+export  type IUser = z.infer<typeof UserSchema>

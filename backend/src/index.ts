@@ -12,7 +12,6 @@ app.use('/api/user/',userRouter)
 
 
 
-
 async function main(){
 await mongoose.connect(Mongo_Url);
 app.listen(port,()=>{
