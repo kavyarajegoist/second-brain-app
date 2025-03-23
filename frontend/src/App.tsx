@@ -1,5 +1,5 @@
 
-import { BrowserRouter } from "react-router-dom"
+import { BrowserRouter ,Routes,Route} from "react-router-dom"
 import BrainIcon from "./components/icons/brain"
 import Signup from "./pages/signup"
 import LandingPage from "./pages/landingpage"
@@ -11,7 +11,10 @@ function App() {
     <>
     <div className="font-sans">
     <BrowserRouter>
-   <LandingPage/> 
+
+   <Routes>
+    <Route path = "/signup" element={<Signup/>}/>
+   </Routes>
   
 </BrowserRouter>
          
