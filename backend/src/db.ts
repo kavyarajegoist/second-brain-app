@@ -12,12 +12,13 @@ const contentSchema = new mongoose.Schema({
     title: {type:String,required:true},
     tags:[{type:Types.ObjectId,ref:'tag'}],
     userId:{type:Types.ObjectId,},
-    type: {type:String,enum:contentTypes,required:true}
+    type: {type:String,enum:contentTypes,required:true},
+    createdOn:{type:Date,required:true}
 })
 
 const linkSchema = new mongoose.Schema({
     hash:{type:String,required:true},
-    userId:{type:mongoose.Types.ObjectId,ref:'user',required:true }
+    userId:{type:mongoose.Types.ObjectId,ref:'user',required:true, unique:true }
 })
 
 const tagsSchema = new mongoose.Schema({

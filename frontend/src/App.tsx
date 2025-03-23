@@ -1,21 +1,22 @@
-import {  useState } from "react"
 
+import { BrowserRouter } from "react-router-dom"
+import BrainIcon from "./components/icons/brain"
+import Signup from "./pages/signup"
+import LandingPage from "./pages/landingpage"
 
 
 function App() {
-    const [data,setdata] = useState(null)
-    const hanadleClick = async()=>{
-       const response = await fetch("/api/user");
-       const message = await response.json();
-       setdata(message);
-    }
+   
   return (
     <>
-      <div className="font-medium">
-          hello 
-          <button onClick={hanadleClick}>Click me</button>
-          <p>{data}</p>
-      </div>
+    <div className="font-sans">
+    <BrowserRouter>
+   <LandingPage/> 
+  
+</BrowserRouter>
+         
+      </div>    
+   
     </>
   )
 }

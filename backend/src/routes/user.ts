@@ -1,19 +1,15 @@
-import Router, {
-  application,
-  response,
-  type Request,
-  type Response,
-} from "express";
+import Router, { type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
 import { UserSchema } from "../schema/schema";
-import { Content, userModel } from "../db";
+import { Content, Links, userModel } from "../db";
 import bcrypt from "bcrypt";
 import { Access_Secret, Refresh_Secret } from "../config";
 import cookieParser from "cookie-parser";
 import userAuth from "../middleware/user";
 import { contentSchema } from "../schema/content";
 import type { AuthRequest } from "../middleware/user";
-import { Types } from "mongoose";
+import CryptoJS from "crypto-js";
+import type { populate } from "dotenv";
 
 const userRouter = Router();
 
@@ -137,7 +133,9 @@ userRouter.get(
       res.status(401).json({ message: "Not Authorised User" });
     }
     try {
-      const user = await userModel.findById(userId).select("-password");
+      const user = await userModel
+        .findById(userId).select("-password")
+        
       if (!user) {
         res.status(403).json({ message: "User not found" });
       }
@@ -170,143 +168,7 @@ userRouter.post("/logout", (req, res) => {
   }
 });
 
-userRouter.get(
-  "/contents",
-  userAuth,
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const userId = req.user?.id;
-      const contents = await Content.find({ userId }).select("-userId");
-      if (!contents) {
-        res.status(403).json({ message: "No Content found" });
-      }
-      res.status(200).json({ message: "content founde", contents });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Internal Server Error" });
-    }
-  }
-);
-
-userRouter.post("/add-content", userAuth, async (req: AuthRequest, res) => {
-  try {
-    const userId = req.user?.id;
-    const parseData = contentSchema.safeParse(req.body);
-
-    if (!parseData.success) {
-      const errorMessages = parseData.error;
-
-      res.status(403).json({
-        message: "Invalid Input",
-        errorMessages,
-      });
-    }
-
-    const { type, link, title, tags } = req.body;
-    console.log("hello");
-    await Content.create({
-      type,
-      link,
-      title,
-      tags,
-      userId,
-    });
-    res.status(201).json({ message: "Contend add successfully" });
-    console.log("hellp");
-  } catch (err) {
-    console.log(err);
-    res.status(401).json({
-      message: "error occured",
-      err,
-    });
-  }
-});
-
-userRouter.delete("/content/:id", userAuth, async (req: AuthRequest, res) => {
-  try {
-    const userId = req.user?.id;
-    const contentId = req.params?.id;
-    console.log(contentId);
-    if (!contentId) {
-      res.status(404).json({ message: "Content id is required" });
-      return;
-    }
-    if (!userId) {
-      res.status(401).json({ message: "user not authenticated" });
-      return;
-    }
-
-    const result = await Content.findOneAndDelete({ userId, _id: contentId });
-    if (!result) {
-      res.status(403).json({ message: "Content not found" });
-      return;
-    }
-    res.status(200).json({ message: "Content deleted successfully." });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-
-userRouter.post(
-  "/brain/share/:id",
-  userAuth,
-  async(req: AuthRequest, res: Response) => {
-    try {
-      const userId = req.user?.id;
-      const contentId = req.params?.id;
-      if (!userId) {
-        res.status(401).json({ message: "User not authorised" });
-        return;
-    }
-      if (!contentId) {
-        res.status(403).json({ message: "Content id is required!" });
-        return;
-      }
-
-      const content = await Content.findOne({_id:contentId,userId})
-      if(!content){
-        res.status(404).json({message:'Content not found'});
-        return;
-      }
-
-      res.status(200).json({share:true,
-        shareLink: `http://localhost/api/user/brain/:${contentId}`
-      })
-    } catch (error) {
-      console.log("Main error" + error);
-    }
-  }
-);
 
 
-userRouter.get("/brain/:id",async(req:Request,res:Response)=>{
-  
-    try {
-          const contentId = req.params?.id;
-    if(!contentId)
-    {
-        res.status(403).json({
-            message: 'Content is required'
-        });
-        return;
-    }
-    const content = await Content.findById(contentId);
-    if(!content)
-        {
-            res.status(404).json({message:'Content with give id is not found.'});
-            return;
-        } 
 
-    res.status(200).json({
-        content
-    })
-
-    } catch (error) {
-       console.log("main error:" + error)
-       res.status(500).json({message:'Internal Server Error'}); 
-    }
-
-
-})
 export default userRouter;
