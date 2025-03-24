@@ -1,33 +1,57 @@
 import { Button } from "../components/ui/button";
-import { data, Link, useNavigate } from "react-router-dom";
+import {  Link, useNavigate } from "react-router-dom";
 import { UserSchema } from "../schema/userSchma";
 import User from "../schema/userSchma";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { promise } from "zod";
 import axios from "axios";
+
 
 
 
 const Signup = () => {
     const navigate = useNavigate();
-    const onSumbit:SubmitHandler<User> = async(data)=>{
+    const onSubmit:SubmitHandler<User> = async(data)=>{
        try{
          const response = await axios.post("/api/user/signup",
          data)
         console.log(response);
         if(response.status == 200)
-        {
-            alert("signup successfully");
+        {     reset();
+            alert(response.data.message);
             navigate("/signin")
         }
-        reset();
+       
+      
        }catch(errors)
        {
-        console.log(errors)
+          if(axios.isAxiosError(errors))
+          {
+            const error = errors.response;
+            if(error?.status === 403)
+            {
+              setError("username",{message:error.data.message ||"User already exsist"})
+              console.log(error.data.message)
+            }
+            else if(error?.status === 401)
+            {
+              setError("root",{message:error.data.message})
+            }
+            else if(error?.status === 500)
+            {
+              setError("root",{message:error?.data.message})
+            }
+            
+          }
+          else {
+            setError("root",{message:"Something went wrong..."})
+          }
+        
+        
        }
-        console.log(data);
+      
+      
     }
     const {register,setError,reset,handleSubmit,formState:{errors,isSubmitting}} = useForm<User>({resolver:zodResolver(UserSchema)});
   return (
@@ -35,7 +59,7 @@ const Signup = () => {
      
       <div className="flex justify-center h-screen ">
         <form
-          onSubmit={handleSubmit(onSumbit)}
+          onSubmit={handleSubmit(onSubmit)}
           className="w-[500px] h-[400px] border  rounded-xl shadow-lg flex flex-col  py-6 px-8  mt-24 gap-4 bg-white z-50 "
         >
           <div className="text-center">
@@ -78,6 +102,7 @@ const Signup = () => {
               Log in
             </Link>
           </p>
+          {errors.root && (<div className="text-red-500">{errors.root.message}</div>)}
         </form>
       </div>
     </>
