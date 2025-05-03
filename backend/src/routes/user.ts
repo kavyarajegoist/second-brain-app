@@ -18,24 +18,26 @@ userRouter.use(cookieParser());
 userRouter.post("/signup", async (req: Request, res: Response) => {
   try {
     const parsedData = UserSchema.safeParse(req.body);
-    if (!parsedData.success) {
+    if (!parsedData.success ) {
       const errorMessages = parsedData.error.errors.map((error) => ({
         field: error.path.join("."),
         message: error.message,
       }));
-      res.status(411).json({
+      res.status(401).json({
         errors: errorMessages,
         message: "Invalid username or password",
       });
+      return;
     }
 
-    const { username, password } = req.body;
+    const { username, password } = parsedData.data;
 
     const user = await userModel.findOne({ username });
     if (user) {
       res
         .status(403)
         .json({ message: "User already exsist with this username" });
+        return;
     }
     const hassedPassword: string = await bcrypt.hash(password, 10);
 
@@ -168,7 +170,17 @@ userRouter.post("/logout", (req, res) => {
   }
 });
 
+userRouter.post('/query',userAuth,(req:AuthRequest,res:Response)=>{
+  try{
+    const userId = req.user?.id;
 
+  }
+  catch(err)
+  {
+    console.log(err);
+    res.status(500).json({message:'Internal Server Error'})
+  }
+})
 
 
 export default userRouter;
