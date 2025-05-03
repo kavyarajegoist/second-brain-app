@@ -3,9 +3,11 @@ import {  Link, useNavigate } from "react-router-dom";
 import { UserSchema } from "../schema/userSchma";
 import User from "../schema/userSchma";
 import { SubmitHandler, useForm } from "react-hook-form";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+
 
 
 
@@ -19,8 +21,7 @@ const Signup = () => {
         console.log(response);
         if(response.status == 200)
         {     reset();
-            alert(response.data.message);
-            navigate("/signin")
+            navigate("/signin",{state:{signupSuccess:true}})
         }
        
       

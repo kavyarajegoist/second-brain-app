@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import BrainIcon from "../components/icons/brain";
 import DocumentIcon from "../components/icons/document";
 import LinkTag from "../components/icons/linkTag";
@@ -6,6 +6,8 @@ import HashTag from "../components/icons/hastag";
 import TwitterIcon from "../components/icons/twitter";
 import { Button } from "../components/ui/button";
 import ShareIcon from "../components/icons/shareicon";
+import { useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 interface Tabs{
     icon:any
@@ -13,8 +15,16 @@ interface Tabs{
 
 }
 const LandingPage = ()=>{
+    const location = useLocation();
+    useEffect(()=>{
+        if(location.state?.signinSuccess)
+        {
+            toast.success('Signin Successful')
+        }
+    },[location.state])
     return(
         <>
+            <ToastContainer/>
             <div className="flex flex-row h-screen ">
                 <div className="flex flex-col items-start w-1/5 border-2 py-4 px-5 space-y-10">
                     <div className="flex justify-between items-center gap-3 " >

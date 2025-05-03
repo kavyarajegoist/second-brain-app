@@ -2,6 +2,7 @@ import React from "react";
 import cn from "../../utils/cn";
 import { cva, VariantProps } from "class-variance-authority";
 
+
 export const buttonVariants = cva("transistion-all duration-300 rounded-md ", {
   variants: {
     variant: {

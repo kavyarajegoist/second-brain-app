@@ -1,28 +1,42 @@
 
 import { Button } from "../components/ui/button";
-import {  Link, useNavigate } from "react-router-dom";
+import {  Link, useLocation, useNavigate } from "react-router-dom";
 import { UserSchema } from "../schema/userSchma";
 import User from "../schema/userSchma";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 
 
 
 const Signin = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    useEffect(()=>{
+      if(location.state?.signupSuccess)
+      {
+        toast.success('Signup Successful')
+      }
+    },[location.state])
     const onSubmit:SubmitHandler<User> = async(data)=>{
        try{
-         const response = await axios.post("/api/user/signup",
+         const response = await axios.post("/api/user/signin",
          data)
         console.log(response);
         if(response.status == 200)
         {     reset();
-            alert(response.data.message);
-            navigate("/signin")
+            navigate("/",{state:{signinSuccess:true}});
         }
+        useEffect(()=>{
+          if(location.state?.signupSuccess)
+          {
+            alert("Signup Successfully");
+          }
+        },[location.state])
        
       
        }catch(errors)
@@ -57,7 +71,7 @@ const Signin = () => {
     const {register,setError,reset,handleSubmit,formState:{errors,isSubmitting}} = useForm<User>({resolver:zodResolver(UserSchema)});
   return (
     <>
-     
+      <ToastContainer/>
       <div className="flex justify-center h-screen ">
         <form
           onSubmit={handleSubmit(onSubmit)}
