@@ -1,9 +1,9 @@
-import DocumentIcon from "../icons/document"
-import ShareIcon from "../icons/shareicon";
+
 import { FileTextIcon } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { Share2 } from "lucide-react";
-import { ZodDate } from "zod";
+import TwitterEmbed from "../twitterEmbed";
+
 interface Card{
     type?:any,
     shareicon?:any,
@@ -15,27 +15,27 @@ interface Card{
 const Card  = (props:Card)=>{
     return (
         <>
-            <div className="w-96 bg-blue-100 rounded-lg flex flex-col gap-4 py-4 px-3 ">
-             <div className="flex justify-between " >
+            <div className="max-w-72 bg-blue-100 rounded-xl flex flex-col gap-4 px-4 py-5 ">
+             <div className="flex justify-between items-center" >
                 <div className="flex gap-2">
-                    <FileTextIcon color='grey'/>
+                    <FileTextIcon size={20} color='grey'/>
                     {props.title}
                 </div>
                 <div className="flex gap-4">
-                    <Share2 color="grey"/>
-                    <Trash2 color="grey"/>
+                    <Share2 size={20} color="grey" className="cursor-pointer" />
+                    <Trash2 size={20} color="grey" className="cursor-pointer"/>
 
                 </div>
              </div>
              <div >
 
              </div>
-             <div className="flex gap-5">
-               
+             <div className="flex flex-col gap-5 w-full border-none">
+             {/* <iframe className="w=" src="https://www.youtube.com/embed/WmvpJ4KX30s" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" ></iframe> */}
+            <TwitterEmbed url= 'https://x.com/AravSrinivas/status/1920924933267325435'/>
              </div>
              <div>
                   <span className="text-gray-500 ">Added on</span>
-                  
              </div>
             </div>
         </>

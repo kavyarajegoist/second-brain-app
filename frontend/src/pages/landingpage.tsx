@@ -1,15 +1,19 @@
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import ShareIcon from "../components/icons/shareicon";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import Sidebar from "../components/sidebar";
 import AddContent from "../components/addcontent";
+import Card from "../components/ui/card";
+import { Car } from "lucide-react";
+
 
 
 const LandingPage = ()=>{
     const navigate = useNavigate();
     const location = useLocation();
+    const[visible,setVisible] = useState(false);
     useEffect(()=>{
         if(location.state?.signinSuccess)
         {
@@ -19,6 +23,7 @@ const LandingPage = ()=>{
     return(
         <>
             <ToastContainer/>
+           
             <div className="flex flex-row h-screen ">
               <Sidebar/>
                 <div className=" lg:w-4/5 mt-12 flex flex-col ">
@@ -28,11 +33,22 @@ const LandingPage = ()=>{
                             </div>
                             <div className="flex items-center gap-4">   
                                     <Button text ="Share Brain" variant="secondary" size = "lg" startIcon={<ShareIcon size="lg" color='#6962e0'/>}/>
-                            <Button text="Add Content" size="lg" onClick={()=>{navigate('/add-content')}}/>
+                            <Button text="Add Content" size="lg" onClick={()=>setVisible(!visible)}/>
                             </div>
                         </div>
+
+                        {visible && <AddContent setVisible={setVisible} />}
+                        <div className="p-6 m-2 grid grid-cols-4 gap-5  ">
+                            <Card title="hello" date={new Date()}/>
+                            <Card title="hello" date={new Date()}/>
+                            <Card title="hello" date={new Date()}/>
+                            <Card title="hello" date={new Date()}/>
+                            <Card title="hello" date={new Date()}/>
+                        </div>    
                 </div>
+                
             </div>
+            
         </>
     )
     

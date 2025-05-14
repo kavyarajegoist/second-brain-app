@@ -26,7 +26,7 @@ const Signin = () => {
        try{
          const response = await axios.post("/api/user/signin",
          data)
-        console.log(response);
+        console.log(response.data.accessToken);
         if(response.status == 200)
         {     reset();
             navigate("/",{state:{signinSuccess:true}});
