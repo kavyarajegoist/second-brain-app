@@ -1,32 +1,30 @@
-
-import { BrowserRouter ,Routes,Route} from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Signin from "./pages/signin"
 import Signup from "./pages/signup"
 import LandingPage from "./pages/landingpage"
-import Card from "./components/ui/card"
-import AddContent from "./components/addcontent"
 
+import { useAuth } from "./components/authProvider"
+
+
+function AppRoutes() {
+  const { authToken } = useAuth();
+  console.log(authToken);
+  return (
+    <Routes>
+      <Route path="/signup" element={(authToken !== undefined || !authToken) ? <Navigate to="/" replace /> : <Signup />} />
+      <Route path="/signin" element={(authToken !== undefined || !authToken)? <Navigate to="/" replace /> : <Signin />} />
+      <Route path="/" element={(authToken !== undefined || !authToken) ? <LandingPage /> : <Navigate to="/signin" replace />} />
+    </Routes>
+  )
+}
 
 function App() {
-   
   return (
-    <>
     <div className="font-sans">
-    <BrowserRouter>
-    {/* <Card title="Hello" date={new Date()}/> */}
-    {/* <AddContent/> */}
-   <Routes>
-    <Route path = "/signup" element={<Signup/>}/>
-    <Route path = '/signin' element={<Signin/>}/>
-    <Route path = '/' element={<LandingPage/>}/>
-    {/* <Route path = '/add-content' element ={<AddContent/>}/> */}
-   </Routes>
-  
-</BrowserRouter>
-         
-      </div>    
-   
-    </>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </div>
   )
 }
 

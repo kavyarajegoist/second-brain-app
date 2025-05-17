@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { useAuth } from "../components/authProvider";
 
 
 
@@ -22,21 +23,18 @@ const Signin = () => {
         toast.success('Signup Successful')
       }
     },[location.state])
+    const {handlelogin} = useAuth();
     const onSubmit:SubmitHandler<User> = async(data)=>{
        try{
-         const response = await axios.post("/api/user/signin",
-         data)
-        console.log(response.data.accessToken);
-        if(response.status == 200)
-        {     reset();
-            navigate("/",{state:{signinSuccess:true}});
-        }
-        useEffect(()=>{
-          if(location.state?.signupSuccess)
-          {
-            alert("Signup Successfully");
-          }
-        },[location.state])
+         await handlelogin(data);
+         reset();
+         navigate('/')
+        // useEffect(()=>{
+        //   if(location.state?.signupSuccess)
+        //   {
+        //     alert("Signup Successfully");
+        //   }
+        // },[location.state])
        
       
        }catch(errors)

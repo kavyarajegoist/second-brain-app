@@ -2,7 +2,7 @@
 import { FileTextIcon } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { Share2 } from "lucide-react";
-import TwitterEmbed from "../twitterEmbed";
+
 
 interface Card{
     type?:any,
@@ -32,7 +32,7 @@ const Card  = (props:Card)=>{
              </div>
              <div className="flex flex-col gap-5 w-full border-none">
              {/* <iframe className="w=" src="https://www.youtube.com/embed/WmvpJ4KX30s" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" ></iframe> */}
-            <TwitterEmbed url= 'https://x.com/AravSrinivas/status/1920924933267325435'/>
+         
              </div>
              <div>
                   <span className="text-gray-500 ">Added on</span>

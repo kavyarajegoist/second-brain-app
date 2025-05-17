@@ -6,13 +6,14 @@ import { toast, ToastContainer } from "react-toastify";
 import Sidebar from "../components/sidebar";
 import AddContent from "../components/addcontent";
 import Card from "../components/ui/card";
-import { Car } from "lucide-react";
+import { useAuth } from "../components/authProvider";
 
 
 
 const LandingPage = ()=>{
     const navigate = useNavigate();
     const location = useLocation();
+    const {authToken} = useAuth();
     const[visible,setVisible] = useState(false);
     useEffect(()=>{
         if(location.state?.signinSuccess)
@@ -20,8 +21,10 @@ const LandingPage = ()=>{
             toast.success('Signin Successful')
         }
     },[location.state])
+   
     return(
         <>
+        
             <ToastContainer/>
            
             <div className="flex flex-row h-screen ">
