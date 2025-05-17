@@ -92,11 +92,15 @@ userRouter.post("/signin", async (req: Request, res: Response) => {
       secure: true,
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
-
+    
+    const userData = await userModel.findById(user._id).select('-password');
+    
     res.status(200).json({
       message: "Signin Successfully.",
       accessToken,
+      user:userData
     });
+    
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error." });
     return;
