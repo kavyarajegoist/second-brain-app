@@ -62,6 +62,7 @@ userRouter.post("/signin", async (req: Request, res: Response) => {
     if (!parsedData.success) {
       res.status(411).json({
         message: "Invalid Input",
+        error:parsedData.error.errors
       });
       return;
     }
@@ -107,7 +108,7 @@ userRouter.post("/signin", async (req: Request, res: Response) => {
   }
 });
 
-userRouter.post("/refresh", (req: Request, res: Response) => {
+userRouter.post("/refresh", async(req: Request, res: Response) => {
   const refreshToken = req.cookies.jwt;
   if (!refreshToken) {
     res.status(401).json({ message: "Refresh Token required." });
@@ -120,8 +121,10 @@ userRouter.post("/refresh", (req: Request, res: Response) => {
     const accessToken = jwt.sign({ id: decodedData.id }, Access_Secret, {
       expiresIn: "15m",
     });
+    
+    const userData = await userModel.findOne({_id:decodedData.id}).select('-password')
 
-    res.json({ accessToken });
+    res.status(200).json({ accessToken,user:userData });
   } catch (error) {
     res.status(403).json({
       message: "Invalid refresh Token",
@@ -154,13 +157,12 @@ userRouter.get(
   }
 );
 
-userRouter.post("/logout", (req, res) => {
+userRouter.post("/logout",userAuth, (req, res) => {
   try {
     res.clearCookie("jwt", {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      expires: new Date(0),
     });
 
     res.status(200).json({

@@ -4,7 +4,7 @@ import mongoose, { Types } from "mongoose";
 const userSchema = new mongoose.Schema({
     username: {type:String,rerquired:true,unique:true},
     password: {type:String,required:true}
-})
+},{timestamps:true})
 
 const contentTypes = ['document','tweet','links','video'];
 const contentSchema = new mongoose.Schema({
@@ -13,17 +13,17 @@ const contentSchema = new mongoose.Schema({
     tags:[{type:Types.ObjectId,ref:'tag'}],
     userId:{type:Types.ObjectId,},
     type: {type:String,enum:contentTypes,required:true},
-    createdOn:{type:Date,required:true}
-})
+},
+{timestamps:true})
 
 const linkSchema = new mongoose.Schema({
     hash:{type:String,required:true},
     userId:{type:mongoose.Types.ObjectId,ref:'user',required:true, unique:true }
-})
+},{timestamps:true})
 
 const tagsSchema = new mongoose.Schema({
     title:{type:String,required:true,unique:true}
-})
+},{timestamps:true})
 
 
 

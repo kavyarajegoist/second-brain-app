@@ -1,4 +1,4 @@
-import { type Request, type Response,Router } from "express";
+import  { type Request, type Response,Router } from "express";
 import {type AuthRequest } from "../middleware/user";
 import userAuth from "../middleware/user";
 import { Content } from "../db";
@@ -8,7 +8,7 @@ const contentRouter = Router();
 
 
 contentRouter.get(
-  "/contents",
+  "/",
   userAuth,
   async (req: AuthRequest, res: Response) => {
     try {
@@ -41,7 +41,7 @@ contentRouter.post("/add-content", userAuth, async (req: AuthRequest, res) => {
 
       res.status(403).json({
         message: "Invalid Input",
-        errorMessages,
+        errorMessages:errorMessages.flatten(),
       });
     }
 
