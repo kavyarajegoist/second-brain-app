@@ -3,7 +3,7 @@ import {  Link, useNavigate } from "react-router-dom";
 import { UserSchema } from "../schema/userSchma";
 import User from "../schema/userSchma";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -19,10 +19,10 @@ const Signup = () => {
          const response = await axios.post("/api/user/signup",
          data)
         console.log(response);
-        if(response.status == 200)
-        {     reset();
-            navigate("/signin",{state:{signupSuccess:true}})
-        }
+        reset();
+        toast.success("Signup Successfully",{onClose:()=>{
+          navigate('/signin')
+        }})
        
       
        }catch(errors)
@@ -33,11 +33,13 @@ const Signup = () => {
             if(error?.status === 403)
             {
               setError("username",{message:error.data.message ||"User already exsist"})
+              toast.error(error.data.message);
               console.log(error.data.message)
             }
             else if(error?.status === 401)
             {
               setError("root",{message:error.data.message})
+              
             }
             else if(error?.status === 500)
             {
@@ -57,7 +59,7 @@ const Signup = () => {
     const {register,setError,reset,handleSubmit,formState:{errors,isSubmitting}} = useForm<User>({resolver:zodResolver(UserSchema)});
   return (
     <>
-     
+    
       <div className="flex justify-center h-screen ">
         <form
           onSubmit={handleSubmit(onSubmit)}

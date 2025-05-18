@@ -1,31 +1,24 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation} from "react-router-dom";
 import { Button } from "../components/ui/button";
 import ShareIcon from "../components/icons/shareicon";
-import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import {  useState } from "react";
+
 import Sidebar from "../components/sidebar";
 import AddContent from "../components/addcontent";
 import Card from "../components/ui/card";
-import { useAuth } from "../components/authProvider";
+
 
 
 
 const LandingPage = ()=>{
-    const navigate = useNavigate();
-    const location = useLocation();
-    const {authToken} = useAuth();
+ 
     const[visible,setVisible] = useState(false);
-    useEffect(()=>{
-        if(location.state?.signinSuccess)
-        {
-            toast.success('Signin Successful')
-        }
-    },[location.state])
+  
    
     return(
         <>
         
-            <ToastContainer/>
+           
            
             <div className="flex flex-row h-screen ">
               <Sidebar/>

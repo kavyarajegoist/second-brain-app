@@ -3,17 +3,18 @@ import Signin from "./pages/signin"
 import Signup from "./pages/signup"
 import LandingPage from "./pages/landingpage"
 
-import { useAuth } from "./components/authProvider"
+import { useAuth } from "./components/context/authProvider"
+import { ToastContainer } from "react-toastify"
 
 
 function AppRoutes() {
   const { authToken } = useAuth();
-  console.log(authToken);
+  console.log(authToken)
   return (
     <Routes>
-      <Route path="/signup" element={(authToken !== undefined || !authToken) ? <Navigate to="/" replace /> : <Signup />} />
-      <Route path="/signin" element={(authToken !== undefined || !authToken)? <Navigate to="/" replace /> : <Signin />} />
-      <Route path="/" element={(authToken !== undefined || !authToken) ? <LandingPage /> : <Navigate to="/signin" replace />} />
+      <Route path="/signup" element={authToken ? <Navigate to="/" replace /> : <Signup />} />
+      <Route path="/signin" element={authToken ? <Navigate to="/" replace /> : <Signin />} />
+      <Route path="/" element={authToken ? <LandingPage /> : <Navigate to="/signin" replace />} />
     </Routes>
   )
 }
@@ -21,6 +22,7 @@ function AppRoutes() {
 function App() {
   return (
     <div className="font-sans">
+      <ToastContainer/>
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>

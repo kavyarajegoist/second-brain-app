@@ -1,6 +1,7 @@
 import React from "react";
 import cn from "../../utils/cn";
 import { cva, VariantProps } from "class-variance-authority";
+import {motion} from "framer-motion";
 
 
 export const buttonVariants = cva("transistion-all duration-300 rounded-md ", {
@@ -11,13 +12,15 @@ export const buttonVariants = cva("transistion-all duration-300 rounded-md ", {
       ],
       secondary: ["  bg-purple-200 text-purple-700 hover:bg-purple-300 ring-blue-100 font-medium "],
       danger: ["   bg-red-400 text-white hover:bg-red-500      "],
-      outline: [""],
+      outline: ["outline-2 hover:bg-purple-100"],
+      hover:"hover:bg-purple-100 hover:shadow-md",
+      dangerOutline: "text-red-400 hover:bg-red-200 "
     },
 
     size: {
-      sm: "px-4 h-8 font-medium text-base",
+      sm: "px-2 h-6 font-medium text-base",
       md: "px-6 py-2  font-medium tracking-tight text-base",
-      lg: "px-6  h-12 text-xl font-semibold",
+      lg: "px-6  h-12 gap-2 text-xl font-semibold",
     },
   },
   defaultVariants: {
@@ -28,7 +31,7 @@ export const buttonVariants = cva("transistion-all duration-300 rounded-md ", {
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  variant?: "primary" | "secondary" | "danger";
+  variant?: "primary" | "secondary" | "danger"|"hover"|"dangerOutline";
 
   size?: "sm" | "md" | "lg";
   text: string;
@@ -41,7 +44,9 @@ export interface ButtonProps
 export const Button = ({ variant = "primary", ...props }: ButtonProps) => {
   return (
     <>
-      <button
+      <motion.button
+        whileHover={{scale:1.07}}
+        whileTap={{scale:0.90}}
         className={cn(buttonVariants({ variant, size: props.size }), props.className)}
         onClick={props.onClick}
       >
@@ -50,7 +55,7 @@ export const Button = ({ variant = "primary", ...props }: ButtonProps) => {
         {props.text}
         {props.endIcon ? props.endIcon : null}
         </div>
-      </button>
+      </motion.button>
     </>
   );
 };
