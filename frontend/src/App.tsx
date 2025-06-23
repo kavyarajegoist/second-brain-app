@@ -14,7 +14,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/signup" element={authToken ? <Navigate to="/" replace /> : <Signup />} />
       <Route path="/signin" element={authToken ? <Navigate to="/" replace /> : <Signin />} />
-      <Route path="/" element={authToken ? <LandingPage /> : <Navigate to="/signin" replace />} />
+      <Route path="/" element= {<LandingPage /> } />
     </Routes>
   )
 }

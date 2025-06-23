@@ -1,4 +1,4 @@
-import { useLocation} from "react-router-dom";
+
 import { Button } from "../components/ui/button";
 import ShareIcon from "../components/icons/shareicon";
 import {  useState } from "react";
@@ -20,9 +20,9 @@ const LandingPage = ()=>{
         
            
            
-            <div className="flex flex-row h-screen ">
+            <div className="flex flex-row h-screen w-full ">
               <Sidebar/>
-                <div className=" lg:w-4/5 mt-12 flex flex-col ">
+                <div className=" flex-1 mt-12 flex flex-col ">
                         <div className="justify-between flex gap-2 right-0 px-10 items-center">
                             <div>
                                 <h1 className="text-4xl font-semibold" >All Notes</h1>

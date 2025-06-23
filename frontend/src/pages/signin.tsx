@@ -1,20 +1,20 @@
 import { Button } from "../components/ui/button";
-import {  Link, useLocation, useNavigate } from "react-router-dom";
+import {  Link, useLocation} from "react-router-dom";
 import { UserSchema } from "../schema/userSchma";
 import User from "../schema/userSchma";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+
 import axios from "axios";
 import { useEffect } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast  } from "react-toastify";
 import { useAuth } from "../components/context/authProvider";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 
 
 
 const Signin = () => {
-    const navigate = useNavigate();
     const location = useLocation();
     useEffect(()=>{
       if(location.state?.signupSuccess)
