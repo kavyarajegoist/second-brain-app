@@ -2,6 +2,8 @@ import Input from "./ui/input";
 import { Button } from "./ui/button";
 import { useRef, useState } from "react";
 import {  Plus, X } from "lucide-react";
+import axios from "axios";
+import { useAuth } from "./context/authProvider";
 
 interface AddContentProp {
     setVisible : (visible:boolean)=>void;
@@ -9,13 +11,24 @@ interface AddContentProp {
 
 
 const AddContent = ({setVisible}:AddContentProp)=>{
+    const {authToken} = useAuth();
+    const [type, setType] = useState<"document" | "tweet" | "video" | "links">(
+      "document"
+    );
     const [newTag,setNewTag] = useState<string>("")
     const [title,setTitle] = useState<string>()
     const [link,setLink] = useState<string>()
     const tagRef = useRef(null)
     const [tags,setTags] = useState<string[]>(["productive","dsa","#100xdevs"])
    const handleAddContent = async()=>{
-        console.log(title,link)
+    console.log(type)
+        try {
+            const data = {title:title,type:type,link:link,tags:tags }
+            const response = await axios.post(`/api/content/add`,data,{headers:{Authorization:`Bearer ${authToken}`}})
+            console.log(response.data)
+        } catch (error) {
+            console.error(error)
+        }
    }
    const deleteTag = (tag:string)=>{
         const updatedTag = tags.filter(t=>t != tag)
@@ -37,11 +50,22 @@ const AddContent = ({setVisible}:AddContentProp)=>{
                 }}
               />
             </div>
-            <select name="" id="">
+            <select
+              value={type}
+              onChange={(e) =>
+                setType(
+                  e.currentTarget.value as
+                    | "document"
+                    | "tweet"
+                    | "video"
+                    | "links"
+                )
+              }
+            >
               <option value="document">Document</option>
-              <option value="twitter">Tweet</option>
+              <option value="tweet">Tweet</option>
               <option value="video">Video</option>
-              <option value="link">Links</option>
+              <option value="links">Links</option>
             </select>
             <Input
               variant="text"
@@ -56,9 +80,12 @@ const AddContent = ({setVisible}:AddContentProp)=>{
             <div className="flex flex-col gap-4 w-full ">
               <div className=" flex flex-wrap gap-2 w-full ">
                 {tags.map((tag) => (
-                  <div key={tag} className="flex gap-2 items-center border-2 px-2 py-1 rounded-full bg-yellow-100 border-yellow-500">
+                  <div
+                    key={tag}
+                    className="flex gap-2 items-center border-2 px-2 py-1 rounded-full bg-yellow-100 border-yellow-500"
+                  >
                     {tag}{" "}
-                    <button onClick={()=>deleteTag(tag)}>
+                    <button onClick={() => deleteTag(tag)}>
                       <X
                         size={"16"}
                         strokeWidth={"3"}
@@ -69,13 +96,22 @@ const AddContent = ({setVisible}:AddContentProp)=>{
                 ))}
               </div>
               <div className="flex w-full gap-2 ">
-                <Input ref={tagRef} className="w-full" placeholder="#tags" onChange={(e)=>setNewTag(e.currentTarget.value)} />
-                <Button variant="secondary" startIcon={<Plus />} onClick={()=>{
+                <Input
+                  ref={tagRef}
+                  className="w-full"
+                  placeholder="#tags"
+                  onChange={(e) => setNewTag(e.currentTarget.value)}
+                />
+                <Button
+                  variant="secondary"
+                  startIcon={<Plus />}
+                  onClick={() => {
                     const t = (newTag ?? "").trim();
                     if (!t || tags.includes(t)) return;
-                    setTags([...tags,t])
-                    setNewTag("")
-                }} ></Button>
+                    setTags([...tags, t]);
+                    setNewTag("");
+                  }}
+                ></Button>
               </div>
             </div>
             <Button onClick={handleAddContent} text="Add Content" size="lg" />
