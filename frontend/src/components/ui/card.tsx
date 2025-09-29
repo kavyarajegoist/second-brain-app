@@ -18,8 +18,7 @@ const Card = (props: Card) => {
     <>
       <motion.div
         whileHover={{ scale: 1.1 }}
-        transition={{ duration: 0.2, }}
-       
+        transition={{ duration: 0.2 }}
         className="max-w-72 border shadow-md rounded-xl flex flex-col gap-4 px-4 py-5   "
       >
         <div className="flex justify-between items-center">
@@ -44,7 +43,11 @@ const Card = (props: Card) => {
         </div>
         <div></div>
         <div className="flex flex-col gap-5 w-full border-none">
-    
+          <iframe
+            src=""
+            width="full"
+            height="height full"
+          ></iframe>
         </div>
         <div>
           <span className="text-gray-500 ">Added on</span>

@@ -34,7 +34,7 @@ export interface ButtonProps
   variant?: "primary" | "secondary" | "danger"|"hover"|"dangerOutline";
 
   size?: "sm" | "md" | "lg";
-  text: string;
+  text?: string;
   startIcon?: any;
   endIcon?: any;
   onClick?: () => void;

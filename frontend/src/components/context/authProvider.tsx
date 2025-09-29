@@ -21,27 +21,27 @@ export default function AuthProvider({children}:AuthProviderProps) {
     const [currentUser,setCurrentUser] = useState<IUser|null>();
     const [isLoading,setIsLoading] = useState<boolean>(true);
 
-    // useEffect(()=>{
-    //     async function reload () {
-    //         try{
-    //            const response = await axios.post('/api/user/refresh',{},{withCredentials:true});
+    useEffect(()=>{
+        async function reload () {
+            try{
+               const response = await axios.post('/api/user/refresh',{},{withCredentials:true});
             
-    //             setAuthToken(response.data.accessToken);
-    //             setCurrentUser(response.data.user);
-    //         }
-    //         catch(error)
-    //         {
-    //             setAuthToken(null);
-    //             setCurrentUser(null);
+                setAuthToken(response.data.accessToken);
+                setCurrentUser(response.data.user);
+            }
+            catch(error)
+            {
+                setAuthToken(null);
+                setCurrentUser(null);
                
-    //         }
-    //         finally{
-    //             setIsLoading(false);
-    //         }
-    //     }
+            }
+            finally{
+                setIsLoading(false);
+            }
+        }
 
-    //     reload();
-    // },[])
+        reload();
+    },[])
 
     async function handlelogin  (data:User){
         try{
