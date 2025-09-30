@@ -42,16 +42,15 @@ contentRouter.post("/add", userAuth, async (req: AuthRequest, res) => {
     }
     const tagIds: mongoose.Types.ObjectId[] = [];
     const { link, type, title, tags: tagTitle } = parsedData.data;
-    const content = await Content.find({title,userId});
+    const content = await Content.findOne({title,userId});
     if (content)
     {
       res.status(403).json({message:"Content already created with given title. Title should be unique"});
       return;
     }
 
-    // console.log(tagTitle)
     for (const t of tagTitle) {
-      // console.log(t)
+      
       const doc = await Tag.findOneAndUpdate(
         { title: t.trim().toLowerCase() },
         {
@@ -64,7 +63,6 @@ contentRouter.post("/add", userAuth, async (req: AuthRequest, res) => {
       if (doc?._id) tagIds.push(doc._id)
     }
 
-    // console.log("hello");
     await Content.create({
       link,
       type,
@@ -74,7 +72,6 @@ contentRouter.post("/add", userAuth, async (req: AuthRequest, res) => {
     });
 
     res.status(201).json({ message: "Contend add successfully" });
-    // console.log("hellp");
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -85,7 +82,7 @@ contentRouter.post("/add", userAuth, async (req: AuthRequest, res) => {
 });
 
 contentRouter.delete(
-  "/content/:id",
+  "/delete/:id",
   userAuth,
   async (req: AuthRequest, res) => {
     try {
