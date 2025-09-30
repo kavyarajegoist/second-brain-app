@@ -1,124 +1,194 @@
 import Input from "./ui/input";
 import { Button } from "./ui/button";
 import { useRef, useState } from "react";
-import {  Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "./context/authProvider";
 
 interface AddContentProp {
-    setVisible : (visible:boolean)=>void;
+  setVisible: (visible: boolean) => void;
 }
 
+const AddContent = ({ setVisible }: AddContentProp) => {
+  const { authToken } = useAuth();
+  const [type, setType] = useState<"document" | "tweet" | "video" | "links">(
+    "document"
+  );
+  const [newTag, setNewTag] = useState<string>("");
+  const [title, setTitle] = useState<string>();
+  const [link, setLink] = useState<string>();
+  const tagRef = useRef(null);
+  const [tags, setTags] = useState<string[]>([
+    "productive",
+    "dsa",
+    "#100xdevs",
+  ]);
+  const [error, setError] = useState<string | null>(null);
 
-const AddContent = ({setVisible}:AddContentProp)=>{
-    const {authToken} = useAuth();
-    const [type, setType] = useState<"document" | "tweet" | "video" | "links">(
-      "document"
-    );
-    const [newTag,setNewTag] = useState<string>("")
-    const [title,setTitle] = useState<string>()
-    const [link,setLink] = useState<string>()
-    const tagRef = useRef(null)
-    const [tags,setTags] = useState<string[]>(["productive","dsa","#100xdevs"])
-   const handleAddContent = async()=>{
-    console.log(type)
-        try {
-            const data = {title:title,type:type,link:link,tags:tags }
-            const response = await axios.post(`/api/content/add`,data,{headers:{Authorization:`Bearer ${authToken}`}})
-            console.log(response.data)
-        } catch (error) {
-            console.error(error)
-        }
-   }
-   const deleteTag = (tag:string)=>{
-        const updatedTag = tags.filter(t=>t != tag)
-        setTags(updatedTag)
-   }
-    return (
-      <>
-        <div className="fixed inset-0 backdrop-blur-sm" />
-        <div className="fixed inset-0 flex justify-center items-center z-10">
-          <div className="flex flex-col gap-10 w-96 bg-white p-8 rounded-lg shadow-lg border">
-            <div className="flex justify-between">
-              <h1>Add Content to Your Second Brain</h1>
-              <Button
-                text="close"
-                size="sm"
-                variant="danger"
-                onClick={() => {
-                  setVisible(false);
-                }}
-              />
-            </div>
-            <select
-              value={type}
-              onChange={(e) =>
-                setType(
-                  e.currentTarget.value as
-                    | "document"
-                    | "tweet"
-                    | "video"
-                    | "links"
-                )
-              }
-            >
-              <option value="document">Document</option>
-              <option value="tweet">Tweet</option>
-              <option value="video">Video</option>
-              <option value="links">Links</option>
-            </select>
-            <Input
-              variant="text"
-              placeholder="title"
-              onChange={(e) => setTitle(e.currentTarget.value)}
+  const isYouTube = (value: string): boolean => {
+    try {
+      const url = new URL(value);
+      const host = url.hostname.toLowerCase();
+      if (host.includes("youtu.be")) return true;
+      if (!host.includes("youtube.com")) return false;
+      return (
+        url.pathname.startsWith("/watch") ||
+        url.pathname.startsWith("/shorts/") ||
+        url.pathname.startsWith("/embed/")
+      );
+    } catch {
+      return false;
+    }
+  };
+
+  const isTwitter = (value: string): boolean => {
+    try {
+      const url = new URL(value);
+      const host = url.hostname.toLowerCase();
+      return host.includes("twitter.com") || host.includes("x.com");
+    } catch {
+      return false;
+    }
+  };
+  const handleAddContent = async () => {
+    console.log(type);
+    try {
+      setError(null);
+      const normalizedTitle = (title ?? "").trim();
+      const inputLink = (link ?? "").trim();
+
+      if (!normalizedTitle) {
+        setError("Title is required");
+        return;
+      }
+      if (!inputLink) {
+        setError("Link is required");
+        return;
+      }
+
+      if (type === "video" && !isYouTube(inputLink)) {
+        setError("For type 'video', please provide a valid YouTube URL");
+        return;
+      }
+      if (type === "tweet" && !isTwitter(inputLink)) {
+        setError("For type 'tweet', please provide a valid Twitter/X URL");
+        return;
+      }
+      if (
+        (type === "document" || type === "links") &&
+        (isYouTube(inputLink) || isTwitter(inputLink))
+      ) {
+        setError(
+          "For 'document' or 'links', YouTube or Twitter links are not allowed"
+        );
+        return;
+      }
+
+      const data = {
+        title: normalizedTitle,
+        type: type,
+        link: inputLink,
+        tags: tags,
+      };
+      const response = await axios.post(`/api/content/add`, data, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      console.log(response.data);
+      setVisible(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const deleteTag = (tag: string) => {
+    const updatedTag = tags.filter((t) => t != tag);
+    setTags(updatedTag);
+  };
+  return (
+    <>
+      <div className="fixed inset-0 backdrop-blur-sm" />
+      <div className="fixed inset-0 flex justify-center items-center z-10">
+        <div className="flex flex-col gap-10 w-96 bg-white p-8 rounded-lg shadow-lg border">
+          <div className="flex justify-between">
+            <h1>Add Content to Your Second Brain</h1>
+            <Button
+              text="close"
+              size="sm"
+              variant="danger"
+              onClick={() => {
+                setVisible(false);
+              }}
             />
-            <Input
-              variant="text"
-              placeholder="link"
-              onChange={(e) => setLink(e.currentTarget.value)}
-            />
-            <div className="flex flex-col gap-4 w-full ">
-              <div className=" flex flex-wrap gap-2 w-full ">
-                {tags.map((tag) => (
-                  <div
-                    key={tag}
-                    className="flex gap-2 items-center border-2 px-2 py-1 rounded-full bg-yellow-100 border-yellow-500"
-                  >
-                    {tag}{" "}
-                    <button onClick={() => deleteTag(tag)}>
-                      <X
-                        size={"16"}
-                        strokeWidth={"3"}
-                        className="text-yellow-700"
-                      />
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <div className="flex w-full gap-2 ">
-                <Input
-                  ref={tagRef}
-                  className="w-full"
-                  placeholder="#tags"
-                  onChange={(e) => setNewTag(e.currentTarget.value)}
-                />
-                <Button
-                  variant="secondary"
-                  startIcon={<Plus />}
-                  onClick={() => {
-                    const t = (newTag ?? "").trim();
-                    if (!t || tags.includes(t)) return;
-                    setTags([...tags, t]);
-                    setNewTag("");
-                  }}
-                ></Button>
-              </div>
-            </div>
-            <Button onClick={handleAddContent} text="Add Content" size="lg" />
           </div>
+          <select
+            value={type}
+            onChange={(e) =>
+              setType(
+                e.currentTarget.value as
+                  | "document"
+                  | "tweet"
+                  | "video"
+                  | "links"
+              )
+            }
+          >
+            <option value="document">Document</option>
+            <option value="tweet">Tweet</option>
+            <option value="video">Video</option>
+            <option value="links">Links</option>
+          </select>
+          <Input
+            variant="text"
+            placeholder="title"
+            onChange={(e) => setTitle(e.currentTarget.value)}
+          />
+          <Input
+            variant="text"
+            placeholder="link"
+            onChange={(e) => setLink(e.currentTarget.value)}
+          />
+          {error && <div className="text-red-600 text-sm">{error}</div>}
+          <div className="flex flex-col gap-4 w-full ">
+            <div className=" flex flex-wrap gap-2 w-full ">
+              {tags.map((tag) => (
+                <div
+                  key={tag}
+                  className="flex gap-2 items-center border-2 px-2 py-1 rounded-full bg-yellow-100 border-yellow-500"
+                >
+                  {tag}{" "}
+                  <button onClick={() => deleteTag(tag)}>
+                    <X
+                      size={"16"}
+                      strokeWidth={"3"}
+                      className="text-yellow-700"
+                    />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="flex w-full gap-2 ">
+              <Input
+                ref={tagRef}
+                className="w-full"
+                placeholder="#tags"
+                onChange={(e) => setNewTag(e.currentTarget.value)}
+              />
+              <Button
+                variant="secondary"
+                startIcon={<Plus />}
+                onClick={() => {
+                  const t = (newTag ?? "").trim();
+                  if (!t || tags.includes(t)) return;
+                  setTags([...tags, t]);
+                  setNewTag("");
+                }}
+              ></Button>
+            </div>
+          </div>
+          <Button onClick={handleAddContent} text="Add Content" size="lg" />
         </div>
-      </>
-    );
-}
+      </div>
+    </>
+  );
+};
 
 export default AddContent;

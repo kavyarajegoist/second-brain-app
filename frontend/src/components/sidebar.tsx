@@ -124,9 +124,10 @@ const Sidebar = () => {
         </motion.ul>
 
         {authToken && (
-          <div className=" absolute bottom-10 left-10">
+          <div className=" absolute bottom-10 left-5">
             <Button
-              text="Logout"
+              
+              text={open?"Logout":""}
               variant="dangerOutline"
               startIcon={<LogOutIcon />}
               size="lg"
