@@ -6,11 +6,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
+      "/api": {
+        target: "https://second-brain-app-4kkn.onrender.com",
         changeOrigin: true,
         secure: false,
       },
     },
   },
-})
+});
