@@ -5,12 +5,14 @@ import LandingPage from "./pages/landingpage";
 
 import { useAuth } from "./components/context/authProvider";
 import { ToastContainer } from "react-toastify";
+import ShareBrain from "./pages/sharedBrain";
 
 function AppRoutes() {
   const { authToken } = useAuth();
   console.log(authToken);
   return (
     <Routes>
+      <Route path="/brain" element={<ShareBrain/>}/>
       <Route
         path="/signup"
         element={authToken ? <Navigate to="/" replace /> : <Signup />}

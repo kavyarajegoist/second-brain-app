@@ -27,9 +27,17 @@ const LandingPage = () => {
       }
     };
     fetchContent();
-  }, [data]);
+  }, []);
   const [visible, setVisible] = useState(false);
-
+  const handleShareBrain = async()=>{
+    try {
+      
+      const response = await axios.post("/api/brain/share",{share:true},{headers:{Authorization:`Bearer ${authToken}`}});
+      console.log(response.data);
+    } catch (error) {
+      console.error(error)
+    }
+  }
   return (
     <>
       <div className="flex flex-row h-screen w-full ">
@@ -41,6 +49,7 @@ const LandingPage = () => {
             </div>
             <div className="flex items-center gap-4">
               <Button
+                onClick={handleShareBrain}
                 text="Share Brain"
                 variant="secondary"
                 size="lg"
